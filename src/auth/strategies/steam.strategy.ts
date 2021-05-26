@@ -7,8 +7,8 @@ import { ConfigService } from '@nestjs/config';
 export class SteamStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
     super({
-      returnURL: 'http://localhost:3000/api/auth/steam/return',
-      realm: 'http://localhost:3000/',
+      returnURL: 'https://nestjsspecial.herokuapp.com/api/auth/steam/return',
+      realm: 'https://nestjsspecial.herokuapp.com/',
       apiKey: configService.get('STEAM_API_KEY'),
     });
   }

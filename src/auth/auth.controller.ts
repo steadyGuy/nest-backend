@@ -60,7 +60,7 @@ export class AuthController {
     }
     const token = await this.authService.login(steamid);
 
-    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance })}, 'http://localhost:3003'); window.close();</script>`;
+    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance })}, 'https://nextjs-4keys.vercel.app'); window.close();</script>`;
   }
 
   @UseGuards(JwtAuthGuard)
