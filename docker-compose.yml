@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  service_db:
+    image: mysql:latest
+    container_name: docker-nest-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'nest_db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+volumes:
+  db-data:
