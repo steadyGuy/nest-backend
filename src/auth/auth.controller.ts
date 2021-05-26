@@ -63,6 +63,7 @@ export class AuthController {
     return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance })}, 'https://nextjs-4keys.vercel.app'); window.close();</script>`;
   }
 
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Request() req: any) {
