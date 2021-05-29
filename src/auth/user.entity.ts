@@ -1,7 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { IsEmail } from 'class-validator';
+import { OrderEntity } from 'src/order/order.entity';
+import { ReviewEntity } from 'src/review/review.entity';
+// import { OrderEntity } from 'src/order/order.entity';
 // 'simple-array'
-@Entity({ name: 'user' })
+@Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -26,8 +29,11 @@ export class UserEntity {
   @Column({ default: 0 })
   balance: number;
 
-  @Column({ default: 0 })
-  orders: number;
+  @OneToMany(type => OrderEntity, order => order.user, { eager: true })
+  orders: OrderEntity[];
+
+  @OneToMany(type => ReviewEntity, comment => comment.user, { eager: true })
+  comments: ReviewEntity[];
 
   @Column({ default: 0 })
   wastedBalance: number;

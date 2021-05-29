@@ -7,6 +7,9 @@ import { AuthModule } from './auth/auth.module';
 import { CaseItemModule } from './case-item/case-item.module';
 import { getDbConfig } from './config/db.config';
 import { ReviewModule } from './review/review.module';
+import { PaymentModule } from './payment/payment.module';
+import { ProductModule } from './product/product.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -18,7 +21,10 @@ import { ReviewModule } from './review/review.module';
     }),
     AuthModule,
     CaseItemModule,
-    ReviewModule
+    ReviewModule,
+    PaymentModule,
+    ProductModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService],

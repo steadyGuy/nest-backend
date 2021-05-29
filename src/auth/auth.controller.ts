@@ -2,7 +2,7 @@ import {
   BadRequestException, Body, Controller, HttpCode, Post,
   UseGuards, UsePipes, ValidationPipe, Request, Get, Req, UnauthorizedException
 } from '@nestjs/common';
-import { ALREADY_REGISTERED_ERROR, EMAIL_IN_USE, USER_NOT_FOUND, WRONG_PASSWORD_CHECK } from './auth.constants';
+import { ALREADY_REGISTERED_ERROR, EMAIL_IN_USE, NO_ORDERS, USER_NOT_FOUND, WRONG_PASSWORD_CHECK } from './auth.constants';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -32,7 +32,7 @@ export class AuthController {
     user = await this.authService.createUser(dto);
     const token = await this.authService.login(dto.email);
 
-    return { balance: user.balance, image: user.image, ...token };
+    return { email: user.email, balance: user.balance, image: user.image, ...token };
   }
 
   @UsePipes(new ValidationPipe())
@@ -41,7 +41,7 @@ export class AuthController {
   async login(@Body() { email, password }: LoginUserDto) {
     const user = await this.authService.validateUser(email, password);
     const token = await this.authService.login(user.email);
-    return { balance: user.balance, image: user.image, ...token };
+    return { email: user.email, balance: user.balance, image: user.image, ...token };
   }
 
   @UseGuards(SteamAuthGuard)
@@ -59,10 +59,9 @@ export class AuthController {
       user = await this.authService.createUserSteam({ steamid, username, image, balance });
     }
     const token = await this.authService.login(steamid);
-
-    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance })}, 'https://nextjs-4keys.vercel.app'); window.close();</script>`;
+    //http://localhost:3003
+    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance: user.balance, email: user.email })}, 'https://nextjs-4keys.vercel.app'); window.close();</script>`;
   }
-
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -96,5 +95,23 @@ export class AuthController {
 
     const newUser = await this.authService.updateEmail(req.user.emailOrSteamdId, dto.email);
     return { email: newUser.email, message: 'Успешно обновлено' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('orders')
+  async orders(@Req() req: any) {
+    const { emailOrSteamdId } = req.user;
+    return this.authService.orders(emailOrSteamdId);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('balance')
+  async getBalance(@Request() req: any) {
+    const id = req.user.emailOrSteamdId;
+    const user = await this.authService.findUser(id, id.includes('@') ? 'email' : 'steamid');
+    if (!user) { return null; }
+
+    return user.balance;
   }
 }

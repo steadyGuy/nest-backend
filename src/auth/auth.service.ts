@@ -7,6 +7,7 @@ import { genSalt, hash, compare } from 'bcryptjs';
 import { USER_NOT_FOUND, WRONG_PASSWORD, WRONG_PASSWORD_CHECK } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserSteamDto } from './dto/register-user-steam.dto';
+import { OrderEntity } from 'src/order/order.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,8 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(OrderEntity)
+    private readonly orderRepository: Repository<OrderEntity>,
     private readonly jwtService: JwtService,
   ) { }
 
@@ -63,10 +66,31 @@ export class AuthService {
   }
 
   async login(emailOrSteamdId: string) {
-    const payload = { emailOrSteamdId };
+    const payload = { emailOrSteamdId, };
     return {
       access_token: await this.jwtService.signAsync(payload, { expiresIn: '10h', secret: 'test' }),
     };
+  }
+
+  async orders(emailOrSteamdId: string) {
+    const user = await this.findUser(emailOrSteamdId, emailOrSteamdId.includes('@') ? 'email' : 'steamid');
+
+    if (!user?.email) {
+      throw new BadRequestException('Пользователя с таким email нет');
+    }
+
+    const orders = await this.orderRepository.find({ relations: ['key', 'account', 'product'], where: [{ user }] });
+    console.log(orders);
+    return orders.map(o => {
+      return {
+        id: o.id, key: o.key?.code, date: o.created_at,
+        account: o.account, platform: o.product.platform?.name, title: o.product.title,
+      };
+    });
+  }
+
+  async balance() {
+    return this.userRepository.find({ relations: ['orders'] });
   }
 
 }

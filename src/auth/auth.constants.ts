@@ -3,3 +3,5 @@ export const USER_NOT_FOUND = 'Пользователь с таким email не
 export const WRONG_PASSWORD_CHECK = 'Пароли не совпадают';
 export const WRONG_PASSWORD = 'Пароль введено неверно';
 export const EMAIL_IN_USE = 'Пользователь с таким email уже зарегистрирован';
+
+export const NO_ORDERS = 'У вас ещё нет покупок';

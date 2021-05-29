@@ -1,34 +1,38 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Body, Controller, Delete, Get, HttpCode, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserData } from 'src/auth/decorators/user-data.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { ReviewModel } from './review.model';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { ReviewService } from './review.service';
 
-@Controller('review')
+@Controller('reviews')
 export class ReviewController {
 
-  // constructor(private readonly configService: ConfigService) { }
-
-  @Post('create')
-  async create(@Body() dto: Omit<ReviewModel, 'id'>) {
-    // this.configService.get('TEST');
-  }
+  constructor(private readonly reviewService: ReviewService) { }
 
   @UseGuards(JwtAuthGuard)
-  @Get('byProduct/:productId')
-  async get(@Param('productId') productId: string, @UserData() data: string) {
-    console.log(data);
-    return { hello: 'world' };
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('create')
+  async create(@Body() dto: CreateReviewDto, @Req() req: any) {
+    return this.reviewService.createComment(+dto.productId, dto.description, req.user.emailOrSteamdId);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-
+  @Get()
+  async getAllReviews(@Query() dto: Omit<CreateReviewDto, 'description'>) {
+    return this.reviewService.getReviewsByProduct(+dto.productId);
   }
 
-  @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: ReviewModel) {
+  // @UseGuards(JwtAuthGuard)
+  // @Get('byProduct/:productId')
+  // async get(@Param('productId') productId: string, @UserData() data: string) {
 
-  }
+  //   return { hello: 'world' };
+  // }
+
+  // @Delete(':id')
+  // async delete(@Param('id') id: string) {
+
+  // }
+
 
 }
