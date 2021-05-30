@@ -68,7 +68,7 @@ export class AuthService {
   async login(emailOrSteamdId: string) {
     const payload = { emailOrSteamdId, };
     return {
-      access_token: await this.jwtService.signAsync(payload, { expiresIn: '10h', secret: 'test' }),
+      access_token: await this.jwtService.signAsync(payload, { expiresIn: '24h', secret: 'test' }),
     };
   }
 
@@ -79,8 +79,10 @@ export class AuthService {
       throw new BadRequestException('Пользователя с таким email нет');
     }
 
-    const orders = await this.orderRepository.find({ relations: ['key', 'account', 'product'], where: [{ user }] });
-    console.log(orders);
+    console.log('START')
+    const orders = await this.orderRepository.find({ relations: ['key', 'account', 'product'], where: { user } });
+    console.log('END')
+    console.log(orders)
     return orders.map(o => {
       return {
         id: o.id, key: o.key?.code, date: o.created_at,

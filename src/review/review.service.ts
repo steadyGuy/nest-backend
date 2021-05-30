@@ -35,7 +35,7 @@ export class ReviewService {
       throw new BadRequestException('Пользователь не найден');
     }
 
-    if (!userOrderedProducts.includes(+productId)) {
+    if (!userOrderedProducts.map(_ => +_).includes(productId)) {
       throw new BadRequestException('Для того, чтобы оставить комментарий к даному продукту, вы должны его приобрести');
     }
 
@@ -50,7 +50,6 @@ export class ReviewService {
     review.product = product;
 
     await this.reviewRepository.save(review);
-
     return {
       message: 'Комментарий был успешно добавлен',
       comment: {
@@ -67,16 +66,17 @@ export class ReviewService {
   async getReviewsByProduct(productId: number) {
     const product = await this.productRepository.findOne({ id: productId });
 
-    const reviews = (await this.reviewRepository.find({ relations: ['user'], where: { product } }))
-      .map(review => {
-        return {
-          id: review.id,
-          description: review.description,
-          created_at: review.created_at,
-          userImage: review.user.image,
-          userName: review.user.username,
-        };
-      });
+    const reviews = (await this.reviewRepository.find({ relations: ['user'], where: { product } }));
+    if (reviews.length === 0) { return []; }
+    return reviews.map(review => {
+      return {
+        id: review.id,
+        description: review.description,
+        created_at: review.created_at,
+        userImage: review.user.image,
+        userName: review.user.username,
+      };
+    });
 
     return reviews;
   }

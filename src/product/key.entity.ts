@@ -1,5 +1,5 @@
 import { OrderEntity } from 'src/order/order.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProductEntity } from './product.entity';
 
 @Entity({ name: 'keys' })
@@ -10,6 +10,7 @@ export class KeyEntity {
 
   @Column({ default: '' })
   code: string;
+
 
   @ManyToOne(type => ProductEntity, product => product.keys, { nullable: true, cascade: ["update"] })
   product: ProductEntity;

@@ -14,11 +14,11 @@ export class OrderEntity {
   @JoinColumn({ name: 'productId' })
   product: ProductEntity;
 
-  @OneToOne(() => KeyEntity)
+  @OneToOne(() => KeyEntity, { eager: true })
   @JoinColumn({ name: 'keyId' })
   key: KeyEntity;
 
-  @OneToOne(() => AccountEntity)
+  @OneToOne(() => AccountEntity, { eager: true })
   @JoinColumn({ name: 'accountId' })
   account: AccountEntity;
 

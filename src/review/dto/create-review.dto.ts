@@ -9,6 +9,6 @@ export class CreateReviewDto {
   })
   description: string;
 
-  @IsString()
+  @IsNumber()
   productId: string;
 }

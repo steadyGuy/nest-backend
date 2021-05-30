@@ -59,8 +59,8 @@ export class AuthController {
       user = await this.authService.createUserSteam({ steamid, username, image, balance });
     }
     const token = await this.authService.login(steamid);
-    //http://localhost:3003
-    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance: user.balance, email: user.email })}, 'https://nextjs-4keys.vercel.app'); window.close();</script>`;
+    //
+    return `<script>window.opener.postMessage(${JSON.stringify({ ...token, steamid, username, image, balance: user.balance, email: user.email })}, '${process.env.HOST}'); window.close();</script>`;
   }
 
   @UseGuards(JwtAuthGuard)

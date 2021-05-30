@@ -23,12 +23,12 @@ export class PaymentService {
   ) { }
 
   async confirmOrder(email: string, productId: number, type: string): Promise<any> {
-    console.log(email, productId, type);
-    const user = await this.userRepository.findOne({ email });
-
+    // let start = new Date();
+    // console.log('Start', start)
+    const user = await this.userRepository.findOne({ relations: ['orders'], where: { email } });
+    // console.log('END', start)
     const product = await this.productRepository.findOne({ id: productId });
 
-    console.log(product);
     if (!product) {
       throw new BadRequestException(SOME_FIELDS_NOT_EXISTS);
     }
@@ -63,14 +63,14 @@ export class PaymentService {
     order.user = user;
     order.product = product;
     user.orders = [...user.orders, order];
-    console.log('orderorder', order)
+
     product.orders.push(order);
     await this.orderRepository.save(order);
 
     await this.productRepository.save(product);
-    console.log(order)
-    user.balance -= product.price;
-    user.wastedBalance += product.price;
+
+    user.balance = Number(user.balance) - Number(product.price);
+    user.wastedBalance = Number(user.wastedBalance) + Number(product.price);
 
     await this.userRepository.save(user);
 
@@ -84,7 +84,7 @@ export class PaymentService {
     );
 
     if (!user) {
-      throw new BadRequestException('Пользователь не найден');
+      throw new BadRequestException('Пользователь не был найден. Перезапустите страницу.');
     }
 
     user.balance += sum;
