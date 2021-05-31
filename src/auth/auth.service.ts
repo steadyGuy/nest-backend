@@ -79,10 +79,12 @@ export class AuthService {
       throw new BadRequestException('Пользователя с таким email нет');
     }
 
-    console.log('START')
-    const orders = await this.orderRepository.find({ relations: ['key', 'account', 'product'], where: { user } });
-    console.log('END')
-    console.log(orders)
+
+    const orders = await this.orderRepository.find({
+      relations: ['key', 'account', 'product', 'product.platform'],
+      where: { user }
+    });
+
     return orders.map(o => {
       return {
         id: o.id, key: o.key?.code, date: o.created_at,

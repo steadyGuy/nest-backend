@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { CaseItemModule } from './case-item/case-item.module';
+import { CaseModule } from './case/case.module';
 import { getDbConfig } from './config/db.config';
 import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
@@ -20,7 +20,7 @@ import { OrderModule } from './order/order.module';
       useFactory: getDbConfig
     }),
     AuthModule,
-    CaseItemModule,
+    CaseModule,
     ReviewModule,
     PaymentModule,
     ProductModule,

@@ -27,7 +27,10 @@ export class PaymentService {
     // console.log('Start', start)
     const user = await this.userRepository.findOne({ relations: ['orders'], where: { email } });
     // console.log('END', start)
-    const product = await this.productRepository.findOne({ id: productId });
+    const product = await this.productRepository.findOne(
+      {
+        relations: ['keys', 'orders', 'accounts'], where: { id: productId }
+      });
 
     if (!product) {
       throw new BadRequestException(SOME_FIELDS_NOT_EXISTS);

@@ -7,7 +7,7 @@ import { OrderEntity } from 'src/order/order.entity';
 import { ReviewEntity } from 'src/review/review.entity';
 import { AccountEntity } from 'src/product/account.entity';
 import { PlatformEntity } from 'src/product/platform.entity';
-import { CaseEntity } from 'src/product/case.entity';
+import { CaseEntity } from 'src/case/case.entity';
 
 export const getDbConfig = async (configService: ConfigService): Promise<TypeOrmModuleOptions> => {
   return {

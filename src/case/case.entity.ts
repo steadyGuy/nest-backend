@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from '../product/product.entity';
 
 @Entity({ name: 'cases' })
 export class CaseEntity {
