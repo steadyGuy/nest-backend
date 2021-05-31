@@ -90,7 +90,7 @@ export class PaymentService {
       throw new BadRequestException('Пользователь не был найден. Перезапустите страницу.');
     }
 
-    user.balance += sum;
+    user.balance = Math.round(user.balance + sum);
 
     await this.userRepository.save(user);
 
